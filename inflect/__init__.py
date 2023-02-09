@@ -2005,8 +2005,6 @@ PRESENT_PARTICIPLE_REPLACEMENTS = (
     (re.compile(r"([^aeiou][aeiouy]([bdgmnprst]))$"), r"\g<1>\g<2>"),
 )
 
-DIGIT = re.compile(r"\d")
-
 
 class Words(str):
     lowered: str
@@ -3637,20 +3635,10 @@ class engine:
         >>> ordinal('one')
         'first'
         """
-        if DIGIT.match(str(num)):
-            if isinstance(num, (float, int)) and int(num) == num:
-                n = int(num)
-            else:
-                if "." in str(num):
-                    try:
-                        # numbers after decimal,
-                        # so only need last one for ordinal
-                        n = int(str(num)[-1])
-
-                    except ValueError:  # ends with '.', so need to use whole string
-                        n = int(str(num)[:-1])
-                else:
-                    n = int(num)  # type: ignore
+        num = str(num)
+        int_part, _, dec_part = num.partition(".")
+        try:
+            n = int(dec_part[-1] if dec_part else int_part)
             try:
                 post = nth[n % 100]
             except KeyError:
