@@ -3636,16 +3636,18 @@ class engine:
         'first'
         """
         num = str(num)
-        int_part, _, dec_part = num.partition(".")
         try:
+            float(num)
+        except ValueError:
+            return self._sub_ord(num)
+        else:
+            int_part, _, dec_part = num.partition(".")
             n = int(dec_part[-1] if dec_part else int_part)
             try:
                 post = nth[n % 100]
             except KeyError:
                 post = nth[n % 10]
             return f"{num}{post}"
-        else:
-            return self._sub_ord(num)
 
     def millfn(self, ind: int = 0) -> str:
         if ind > len(mill) - 1:
